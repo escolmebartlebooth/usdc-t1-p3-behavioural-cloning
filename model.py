@@ -49,10 +49,10 @@ def transform_data(X, file_from="l"):
         for i in range(3):
             # check whether data from windows or linux
             if file_from == "w":
-                features.append(cv2.imread(CORRECTED_PATH+
+                features.append(cv2.imread(CORRECTED_PATH +
                                            item[i].split("\\")[-1]))
             else:
-                features.append(cv2.imread(CORRECTED_PATH+
+                features.append(cv2.imread(CORRECTED_PATH +
                                            item[i].split("/")[-1]))
             if i == 0:
                 correction_factor = 0
@@ -71,7 +71,6 @@ def transform_data(X, file_from="l"):
         aug_features.append(cv2.flip(feature, 1))
         aug_measurements.append(measurement*-1.0)
 
-
     return np.array(aug_features), np.array(aug_measurements)
 
 
@@ -80,7 +79,7 @@ def training_model(X, y):
     model = Sequential()
     model.add(Lambda(lambda x: x/255.0 - 0.5,
               input_shape=(160, 320, 3)))
-    model.add(Cropping2D(cropping=((70,25), (0,0))))
+    model.add(Cropping2D(cropping=((70, 25), (0, 0))))
     model.add(Convolution2D(6, 5, 5))
     model.add(Activation('relu'))
     model.add(MaxPooling2D())
