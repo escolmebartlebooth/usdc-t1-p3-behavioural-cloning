@@ -48,7 +48,7 @@ def transform_data(X, file_from="l"):
             features.append(cv2.imread(CORRECTED_PATH+item[0].split("\\")[-1]))
         else:
             features.append(cv2.imread(CORRECTED_PATH+item[0].split("/")[-1]))
-        measurements.append(item[3])
+        measurements.append(float(item[3]))
 
     return np.array(features), np.array(measurements)
 
@@ -62,7 +62,7 @@ def training_model(X, y):
     model.add(Flatten(input_shape=(160, 320, 3)))
     model.add(Dense(1))
     model.compile(loss='mse', optimizer='adam')
-    model.fit(X, y, validation_split=0.2, shuffle=True, nb_epoch=3)
+    model.fit(X, y, validation_split=0.2, shuffle=True, nb_epoch=10)
     model.save("model.h5")
 
 
