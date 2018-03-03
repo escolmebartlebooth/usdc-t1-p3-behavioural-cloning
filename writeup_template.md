@@ -36,10 +36,6 @@ My project includes the following files:
 * model.h5 containing a trained convolution neural network
 * writeup_report.md summarizing the results (this report)
 
-In addition, model.py was assessed against Python Coding standards at:
-* https://www.python.org/dev/peps/pep-0008/
-* http://pep8online.com/
-
 #### 2. Submission includes functional code
 
 The submitted code/model can be tested on either track by running the following commands:
@@ -52,7 +48,14 @@ python drive.py model.h5
 
 The model.py code file is broken into a set of component functions:
 * imports section for all dependencies used in the programme
-* ...
+* image file csv processor to create a training and validation generator
+* image pre-processor to normalise and centre the image data
+* a keras convolutional model
+* a network visualiser
+
+In addition, model.py was assessed against Python Coding standards at:
+* https://www.python.org/dev/peps/pep-0008/
+* http://pep8online.com/
 
 ### Model Architecture and Training Strategy
 
