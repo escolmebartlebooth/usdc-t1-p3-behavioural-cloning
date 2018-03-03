@@ -4,7 +4,9 @@
 import cv2
 import csv
 from sklearn.model_selection import train_test_split
-from keras.layers import Dense, Flatten, Lambda
+from keras.layers import Activation, Dense, Flatten, Lambda
+from keras.layers import Convolution2D
+from keras.layers import MaxPooling2D
 from keras.models import Sequential
 import numpy as np
 
@@ -56,13 +58,20 @@ def transform_data(X, file_from="l"):
 def training_model(X, y):
     """ function to train model """
     model = Sequential()
-    model.add(Lambda(lambda x: x/127.5 - 1.,
-              input_shape=(160, 320, 3),
-              output_shape=(160, 320, 3)))
-    model.add(Flatten(input_shape=(160, 320, 3)))
+    model.add(Lambda(lambda x: x/255.0 - 0.5,
+              input_shape=(160, 320, 3)))
+    model.add(Convolution2D(6, 5, 5))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D())
+    model.add(Convolution2D(6, 5, 5))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D())
+    model.add(Flatten())
+    model.add(Dense(120))
+    model.add(Dense(84))
     model.add(Dense(1))
     model.compile(loss='mse', optimizer='adam')
-    model.fit(X, y, validation_split=0.2, shuffle=True, nb_epoch=10)
+    model.fit(X, y, validation_split=0.2, shuffle=True, nb_epoch=5)
     model.save("model.h5")
 
 
