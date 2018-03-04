@@ -17,7 +17,7 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
+[image1]: ./examples/network.png "Model Visualization"
 [image2]: ./examples/placeholder.png "Grayscaling"
 [image3]: ./examples/placeholder_small.png "Recovery Image"
 [image4]: ./examples/placeholder_small.png "Recovery Image"
@@ -65,9 +65,13 @@ I would like to acknowledge both the primer videos from the Udacity course and a
 * Udacity Course...
 * http://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24)
-
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18).
+The model suggested by NVidia consists of:
+* a normalisation layer
+* i added a cropping layer to remove the top and bottom of the images to remove sky and the car's hood as these parts of the image did not add value to the decision making for steering
+* 3 5 x 5 convolutional layers with relu activation and max pooling
+* 2 3 x 3 convolutional layers with relu activation and max pooling
+* the output is then flattened and followed by 3 dense layers
+* the model uses the adam optimiser and a loss function of mean squared error
 
 #### 2. Attempts to reduce overfitting in the model
 
@@ -105,9 +109,9 @@ At the end of the process, the vehicle is able to drive autonomously around the 
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
+The final model architecture consisted of a convolution neural network with the layers outlined in section 1 above.
 
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
+Here is a visualization of the architecture
 
 ![alt text][image1]
 
