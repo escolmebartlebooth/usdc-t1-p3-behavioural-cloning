@@ -17,6 +17,7 @@ CORRECTED_PATH = FILE_DIR + "IMG/"
 
 # update this value if path info is windows (w) \ or linux (l) /
 FILE_FROM = "l"
+# FILE_FROM = "w"
 
 
 def read_data_from_file():
@@ -40,42 +41,63 @@ def read_data_from_file():
     return train_data, validation_data
 
 
-def transform_data(X, file_from="l"):
-    features = []
-    measurements = []
+def generate_data(X, file_from="l", batch_size=32):
+    """
+        generator function for training and validation data
+    """
 
-    for item in X:
-        # add centre, left and right images and adjust steering
-        for i in range(3):
-            # check whether data from windows or linux
-            if file_from == "w":
-                features.append(cv2.imread(CORRECTED_PATH +
-                                           item[i].split("\\")[-1]))
-            else:
-                features.append(cv2.imread(CORRECTED_PATH +
-                                           item[i].split("/")[-1]))
-            if i == 0:
-                correction_factor = 0
-            elif i == 1:
-                correction_factor = 0.2
-            else:
-                correction_factor = -0.2
-            measurements.append(float(item[3])+correction_factor)
+    sample_size = len(X)
 
-    # now build augmented images
-    aug_features, aug_measurements = [], []
-    for feature, measurement in zip(features, measurements):
-        aug_features.append(feature)
-        aug_measurements.append(measurement)
-        # now also add a flipped image
-        aug_features.append(cv2.flip(feature, 1))
-        aug_measurements.append(measurement*-1.0)
+    # run forever...
+    while 1:
+        # shuffle the data
+        shuffle(X)
+        # generate a sample batch
+        for offset in range(0, sample_size, batch_size):
+            # slice off the next batch
+            batch_samples = X[offset:offset+batch_size]
 
-    return np.array(aug_features), np.array(aug_measurements)
+            # placeholders for the images and angles
+            features = []
+            measurements = []
+
+            # loop the batch
+            for item in batch_samples:
+                # add centre, left and right images and adjust steering
+                for i in range(3):
+                    # check whether data from windows or linux
+                    if file_from == "w":
+                        features.append(cv2.imread(CORRECTED_PATH +
+                                                   item[i].split("\\")[-1]))
+                    else:
+                        features.append(cv2.imread(CORRECTED_PATH +
+                                                   item[i].split("/")[-1]))
+                    if i == 0:
+                        correction_factor = 0
+                    elif i == 1:
+                        correction_factor = 0.2
+                    else:
+                        correction_factor = -0.2
+                    measurements.append(float(item[3])+correction_factor)
+
+                # now build augmented images
+                aug_features, aug_measurements = [], []
+                for feature, measurement in zip(features, measurements):
+                    aug_features.append(feature)
+                    aug_measurements.append(measurement)
+                    # now also add a flipped image
+                    aug_features.append(cv2.flip(feature, 1))
+                    aug_measurements.append(measurement*-1.0)
+
+                yield sklearn.utils.shuffle(np.array(aug_features),
+                                            np.array(aug_measurements))
 
 
-def training_model(X, y):
-    """ function to train model """
+def training_model(X_gen_train, X_gen_valid, sample_size, validation_size):
+    """
+        function to train model
+        args: X_gen_train, X_gen_valid generators for data
+    """
     model = Sequential()
     model.add(Lambda(lambda x: x/255.0 - 0.5,
               input_shape=(160, 320, 3)))
@@ -100,11 +122,17 @@ def training_model(X, y):
     model.add(Dense(84))
     model.add(Dense(1))
     model.compile(loss='mse', optimizer='adam')
-    model.fit(X, y, validation_split=0.2, shuffle=True, nb_epoch=5)
+    model.fit_generator(X_gen_train, samples_per_epoch=sample_size,
+                        nb_epoch=5, validation_data=X_gen_valid,
+                        nb_val_samples=validation_size)
     model.save("model.h5")
 
 
 if __name__ == "__main__":
     train_data, validation_data = read_data_from_file()
-    features, measurements = transform_data(train_data, FILE_FROM)
-    training_model(features, measurements)
+    train_generator = generate_data(train_data, FILE_FROM,
+                                    batch_size=32)
+    validation_generator = generate_data(validation_data, FILE_FROM,
+                                         batch_size=32)
+    training_model(train_generator, validation_generator,
+                   len(train_data), len(validation_data))
