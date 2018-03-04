@@ -5,7 +5,8 @@ import cv2
 import csv
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
-from keras.layers import Activation, Dense, Flatten, Lambda, Cropping2D
+from keras.layers import Activation, Dense, Flatten,
+from keras.layers import Lambda, Cropping2D, Dropout
 from keras.layers import Convolution2D
 from keras.layers import MaxPooling2D
 from keras.models import Sequential
@@ -124,8 +125,12 @@ def training_model(X_train, X_valid):
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Flatten())
-    model.add(Dense(120))
-    model.add(Dense(84))
+    model.add(Dense(100))
+    model.add(Dropout(0.5))
+    model.add(Dense(50))
+    model.add(Dropout(0.5))
+    model.add(Dense(10))
+    model.add(Dropout(0.5))
     model.add(Dense(1))
     model.compile(loss='mse', optimizer='adam')
     model.fit_generator(X_gen_train, samples_per_epoch=len(X_train),
