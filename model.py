@@ -4,6 +4,7 @@
 import cv2
 import csv
 from sklearn.model_selection import train_test_split
+from sklearn.utils import shuffle
 from keras.layers import Activation, Dense, Flatten, Lambda, Cropping2D
 from keras.layers import Convolution2D
 from keras.layers import MaxPooling2D
@@ -89,15 +90,20 @@ def generate_data(X, file_from="l", batch_size=32):
                     aug_features.append(cv2.flip(feature, 1))
                     aug_measurements.append(measurement*-1.0)
 
-                yield sklearn.utils.shuffle(np.array(aug_features),
+                yield shuffle(np.array(aug_features),
                                             np.array(aug_measurements))
 
 
-def training_model(X_gen_train, X_gen_valid, sample_size, validation_size):
+def training_model(X_train, X_valid):
     """
         function to train model
-        args: X_gen_train, X_gen_valid generators for data
+        args: training and validation data files
     """
+    # create data generators
+    X_gen_train = generate_data(X_train, FILE_FROM, batch_size=32)
+    X_gen_valid = generate_data(X_valid, FILE_FROM, batch_size=32)
+
+    # create model
     model = Sequential()
     model.add(Lambda(lambda x: x/255.0 - 0.5,
               input_shape=(160, 320, 3)))
@@ -122,17 +128,12 @@ def training_model(X_gen_train, X_gen_valid, sample_size, validation_size):
     model.add(Dense(84))
     model.add(Dense(1))
     model.compile(loss='mse', optimizer='adam')
-    model.fit_generator(X_gen_train, samples_per_epoch=sample_size,
+    model.fit_generator(X_gen_train, samples_per_epoch=len(X_train),
                         nb_epoch=5, validation_data=X_gen_valid,
-                        nb_val_samples=validation_size)
+                        nb_val_samples=len(X_valid))
     model.save("model.h5")
 
 
 if __name__ == "__main__":
     train_data, validation_data = read_data_from_file()
-    train_generator = generate_data(train_data, FILE_FROM,
-                                    batch_size=32)
-    validation_generator = generate_data(validation_data, FILE_FROM,
-                                         batch_size=32)
-    training_model(train_generator, validation_generator,
-                   len(train_data), len(validation_data))
+    training_model(train_data, validation_data)
