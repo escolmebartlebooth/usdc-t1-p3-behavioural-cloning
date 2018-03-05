@@ -17,6 +17,9 @@ FILE_DIR = "usdc-t1-p3-data/data/"
 DATA_FILE = "driving_log.csv"
 CORRECTED_PATH = FILE_DIR + "IMG/"
 
+# to arrive at correct data size after image augmentation
+SAMPLES_FACTOR = 6
+
 # update this value if path info is windows (w) \ or linux (l) /
 FILE_FROM = "l"
 # FILE_FROM = "w"
@@ -134,9 +137,9 @@ def training_model(X_train, X_valid):
     model.add(Dropout(0.5))
     model.add(Dense(1))
     model.compile(loss='mse', optimizer='adam')
-    model.fit_generator(X_gen_train, samples_per_epoch=len(X_train),
+    model.fit_generator(X_gen_train, samples_per_epoch=len(X_train) * SAMPLES_FACTOR,
                         nb_epoch=5, validation_data=X_gen_valid,
-                        nb_val_samples=len(X_valid))
+                        nb_val_samples=len(X_valid) * SAMPLES_FACTOR)
     model.save("model.h5")
 
 
