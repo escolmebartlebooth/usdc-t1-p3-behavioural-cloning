@@ -134,9 +134,9 @@ def training_model(X_train, X_valid):
     model.add(Dropout(0.5))
     model.add(Dense(1))
     model.compile(loss='mse', optimizer='adam')
-    model.fit_generator(X_gen_train, samples_per_epoch=len(X_train) % batch_size,
+    model.fit_generator(X_gen_train, samples_per_epoch=len(X_train),
                         nb_epoch=5, validation_data=X_gen_valid,
-                        nb_val_samples=len(X_valid) % batch_size)
+                        nb_val_samples=len(X_valid))
     model.save("model.h5")
 
 
