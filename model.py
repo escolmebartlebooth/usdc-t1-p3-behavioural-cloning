@@ -13,7 +13,8 @@ from keras.models import Sequential
 import numpy as np
 
 # global file locations
-FILE_DIR = "usdc-t1-p3-data/data/"
+#FILE_DIR = "usdc-t1-p3-data/data/"
+FILE_DIR = "usdc-t1-p3-data/"
 DATA_FILE = "driving_log.csv"
 CORRECTED_PATH = FILE_DIR + "IMG/"
 
@@ -21,8 +22,8 @@ CORRECTED_PATH = FILE_DIR + "IMG/"
 SAMPLES_FACTOR = 6
 
 # update this value if path info is windows (w) \ or linux (l) /
-FILE_FROM = "l"
-# FILE_FROM = "w"
+#FILE_FROM = "l"
+FILE_FROM = "w"
 
 
 def read_data_from_file():
