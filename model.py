@@ -101,8 +101,9 @@ def training_model(X_train, X_valid):
         args: training and validation data files
     """
     # create data generators
-    X_gen_train = generate_data(X_train, FILE_FROM, batch_size=32)
-    X_gen_valid = generate_data(X_valid, FILE_FROM, batch_size=32)
+    batch_size = 32
+    X_gen_train = generate_data(X_train, FILE_FROM, batch_size=batch_size)
+    X_gen_valid = generate_data(X_valid, FILE_FROM, batch_size=batch_size)
 
     # create model
     model = Sequential()
@@ -133,9 +134,9 @@ def training_model(X_train, X_valid):
     model.add(Dropout(0.5))
     model.add(Dense(1))
     model.compile(loss='mse', optimizer='adam')
-    model.fit_generator(X_gen_train, samples_per_epoch=len(X_train),
+    model.fit_generator(X_gen_train, samples_per_epoch=len(X_train) % batch_size,
                         nb_epoch=5, validation_data=X_gen_valid,
-                        nb_val_samples=len(X_valid))
+                        nb_val_samples=len(X_valid) % batch_size)
     model.save("model.h5")
 
 
