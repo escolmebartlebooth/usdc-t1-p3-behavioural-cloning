@@ -10,10 +10,11 @@ from keras.layers import Lambda, Cropping2D, Dropout
 from keras.layers import Convolution2D
 from keras.layers import MaxPooling2D
 from keras.models import Sequential
+from keras.utils.visualize_util import plot
 import numpy as np
 
 # global file locations
-#FILE_DIR = "usdc-t1-p3-data/data/"
+# FILE_DIR = "usdc-t1-p3-data/data/"
 FILE_DIR = "usdc-t1-p3-data/"
 DATA_FILE = "driving_log.csv"
 CORRECTED_PATH = FILE_DIR + "IMG/"
@@ -22,7 +23,7 @@ CORRECTED_PATH = FILE_DIR + "IMG/"
 SAMPLES_FACTOR = 6
 
 # update this value if path info is windows (w) \ or linux (l) /
-#FILE_FROM = "l"
+# FILE_FROM = "l"
 FILE_FROM = "w"
 
 
@@ -96,7 +97,7 @@ def generate_data(X, file_from="l", batch_size=32):
                     aug_measurements.append(measurement*-1.0)
 
                 yield shuffle(np.array(aug_features),
-                                            np.array(aug_measurements))
+                              np.array(aug_measurements))
 
 
 def training_model(X_train, X_valid):
@@ -137,11 +138,16 @@ def training_model(X_train, X_valid):
     model.add(Dense(10))
     model.add(Dropout(0.5))
     model.add(Dense(1))
+    plot(model, to_file='examples/model.png')
     model.compile(loss='mse', optimizer='adam')
-    model.fit_generator(X_gen_train, samples_per_epoch=len(X_train) * SAMPLES_FACTOR,
+    history = model.fit_generator(X_gen_train,
+                        samples_per_epoch=len(X_train) * SAMPLES_FACTOR,
                         nb_epoch=5, validation_data=X_gen_valid,
                         nb_val_samples=len(X_valid) * SAMPLES_FACTOR)
     model.save("model.h5")
+    for item in history.history.keys():
+        print("key val: {0} is {1}".format(item,
+                                           history.history[item]))
 
 
 if __name__ == "__main__":

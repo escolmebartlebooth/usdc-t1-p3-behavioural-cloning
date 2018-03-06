@@ -65,7 +65,7 @@ I would like to acknowledge both the primer videos from the Udacity course and a
 * Udacity Course...
 * http://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf
 
-The model suggested by NVidia consists of:
+The model suggested by nvidia consists of:
 * a normalisation layer
 * i added a cropping layer to remove the top and bottom of the images to remove sky and the car's hood as these parts of the image did not add value to the decision making for steering
 * 3 5 x 5 convolutional layers with relu activation and max pooling
@@ -75,13 +75,16 @@ The model suggested by NVidia consists of:
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21).
+I introduced dropout in the dense layers to try to reduce overfitting and also augmented the training data set by using 3 approaches:
+* flipping each image by 180 degrees and negating the steering angle
+* using the left and right camera images from the simulator and adjusting the steering angle by 0.2
+* using recovery laps and images from the second test track rather than a single lap of the first track
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+I retained 20% of the training data to be used as a validation data set.
 
 #### 3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+The model used an adam optimizer, so the learning rate was not tuned manually.
 
 #### 4. Appropriate training data
 
