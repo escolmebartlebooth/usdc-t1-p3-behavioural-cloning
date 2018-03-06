@@ -10,7 +10,7 @@ from keras.layers import Lambda, Cropping2D, Dropout
 from keras.layers import Convolution2D
 from keras.layers import MaxPooling2D
 from keras.models import Sequential
-from keras.utils.visualize_util import plot
+# from keras.utils.visualize_util import plot
 import numpy as np
 
 # global file locations
@@ -21,6 +21,9 @@ CORRECTED_PATH = FILE_DIR + "IMG/"
 
 # to arrive at correct data size after image augmentation
 SAMPLES_FACTOR = 6
+
+# number of epochs
+NB_EPOCHS = 3
 
 # update this value if path info is windows (w) \ or linux (l) /
 # FILE_FROM = "l"
@@ -138,11 +141,11 @@ def training_model(X_train, X_valid):
     model.add(Dense(10))
     model.add(Dropout(0.5))
     model.add(Dense(1))
-    plot(model, to_file='examples/model.png')
+    # plot(model, to_file='examples/model.png')
     model.compile(loss='mse', optimizer='adam')
     history = model.fit_generator(X_gen_train,
                         samples_per_epoch=len(X_train) * SAMPLES_FACTOR,
-                        nb_epoch=5, validation_data=X_gen_valid,
+                        nb_epoch=NB_EPOCHS, validation_data=X_gen_valid,
                         nb_val_samples=len(X_valid) * SAMPLES_FACTOR)
     model.save("model.h5")
     for item in history.history.keys():
