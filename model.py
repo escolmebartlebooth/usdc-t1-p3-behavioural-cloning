@@ -85,9 +85,9 @@ def generate_data(X, file_from="l", batch_size=32):
                     if i == 0:
                         correction_factor = 0
                     elif i == 1:
-                        correction_factor = 0.2
+                        correction_factor = 0.25
                     else:
-                        correction_factor = -0.2
+                        correction_factor = -0.25
                     measurements.append(float(item[3])+correction_factor)
 
                 # now build augmented images
