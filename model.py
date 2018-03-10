@@ -3,6 +3,7 @@
 # imports
 import cv2
 import csv
+import random
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from keras.layers import Activation, Dense, Flatten
@@ -88,7 +89,10 @@ def generate_data(X, file_from="l", batch_size=32):
                         correction_factor = 0.25
                     else:
                         correction_factor = -0.25
-                    measurements.append(float(item[3])+correction_factor)
+                    # add a random balancing angle if angle = 0
+                    angle = float(item[3])
+                    if angle == 0.0: angle = random.uniform(-0.05,0.05)
+                    measurements.append(angle+correction_factor)
 
                 # now build augmented images
                 aug_features, aug_measurements = [], []
