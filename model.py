@@ -15,8 +15,8 @@ from keras.models import Sequential
 import numpy as np
 
 # global file locations
-# FILE_DIR = "usdc-t1-p3-data/data/"
-FILE_DIR = "usdc-t1-p3-data/"
+FILE_DIR = "usdc-t1-p3-data/data/"
+# FILE_DIR = "usdc-t1-p3-data/"
 DATA_FILE = "driving_log.csv"
 CORRECTED_PATH = FILE_DIR + "IMG/"
 
@@ -27,8 +27,8 @@ SAMPLES_FACTOR = 6
 NB_EPOCHS = 3
 
 # update this value if path info is windows (w) \ or linux (l) /
-# FILE_FROM = "l"
-FILE_FROM = "w"
+FILE_FROM = "l"
+# FILE_FROM = "w"
 
 
 def read_data_from_file():
@@ -89,9 +89,8 @@ def generate_data(X, file_from="l", batch_size=32):
                         correction_factor = 0.25
                     else:
                         correction_factor = -0.25
-                    # add a random balancing angle if angle = 0
+                    # balance data by removing 40% of zero angle
                     angle = float(item[3])
-                    if angle == 0.0: angle = random.uniform(-0.05,0.05)
                     measurements.append(angle+correction_factor)
 
                 # now build augmented images
