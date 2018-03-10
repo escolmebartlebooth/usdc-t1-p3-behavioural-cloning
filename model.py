@@ -38,7 +38,6 @@ def read_data_from_file():
     """
 
     data_list = []
-    random.seed(42)
     with open(FILE_DIR+DATA_FILE, 'rt') as f:
         # ignore first line if header
         img_data = csv.reader(f)
@@ -48,11 +47,13 @@ def read_data_from_file():
                 firstline = 1
             else:
                 # random lose 60% of zero angle data
-                if (line[3] != 0 or (line[3] == 0
-                                     and random.random() > 0.60)):
+                if (float(line[3]) != 0):
                     data_list.append(line)
+                else:
+                    if (random.random() > 0.6):
+                        data_list.append(line)
 
-    print(len(data_list))
+    print len(data_list)
 
     train_data, validation_data = train_test_split(data_list, test_size=0.2)
     return train_data, validation_data
@@ -95,7 +96,6 @@ def generate_data(X, file_from="l", batch_size=32):
                         correction_factor = 0.15
                     else:
                         correction_factor = -0.15
-                    # balance data by removing 40% of zero angle
                     angle = float(item[3])
                     measurements.append(angle+correction_factor)
 
