@@ -48,9 +48,11 @@ def read_data_from_file():
                 firstline = 1
             else:
                 # random lose 60% of zero angle data
-                print(line[3])
-                if line[3] != 0 or random.random() > 0.60:
+                if (line[3] != 0 or (line[3] == 0
+                                     and random.random() > 0.60)):
                     data_list.append(line)
+
+    print(len(data_list))
 
     train_data, validation_data = train_test_split(data_list, test_size=0.2)
     return train_data, validation_data
