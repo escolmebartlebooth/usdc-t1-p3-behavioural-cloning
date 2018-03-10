@@ -53,7 +53,7 @@ def read_data_from_file():
                     if (random.random() > 0.6):
                         data_list.append(line)
 
-    print len(data_list)
+    print(len(data_list))
 
     train_data, validation_data = train_test_split(data_list, test_size=0.2)
     return train_data, validation_data
