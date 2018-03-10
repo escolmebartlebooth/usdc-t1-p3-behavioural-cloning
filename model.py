@@ -24,7 +24,7 @@ CORRECTED_PATH = FILE_DIR + "IMG/"
 SAMPLES_FACTOR = 6
 
 # number of epochs
-NB_EPOCHS = 3
+NB_EPOCHS = 10
 
 # update this value if path info is windows (w) \ or linux (l) /
 FILE_FROM = "l"
@@ -50,7 +50,7 @@ def read_data_from_file():
                 if (float(line[3]) != 0):
                     data_list.append(line)
                 else:
-                    if (random.random() > 0.6):
+                    if (random.random() > 0.75):
                         data_list.append(line)
 
     print(len(data_list))
@@ -93,9 +93,9 @@ def generate_data(X, file_from="l", batch_size=32):
                     if i == 0:
                         correction_factor = 0
                     elif i == 1:
-                        correction_factor = 0.15
+                        correction_factor = 0.25
                     else:
-                        correction_factor = -0.15
+                        correction_factor = -0.25
                     angle = float(item[3])
                     measurements.append(angle+correction_factor)
 
