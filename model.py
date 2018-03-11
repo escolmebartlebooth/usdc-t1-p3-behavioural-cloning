@@ -132,14 +132,17 @@ def generate_data_2(X, file_from="l", batch_size=32):
             for item in batch_samples:
                 # add centre image for zero angle
                 angle = float(item[3])
+                ch = random.choice([0, 1, 2])
                 if angle == 0:
                     if file_from == "w":
                         features.append(cv2.imread(CORRECTED_PATH +
-                                                   item[0].split("\\")[-1]))
+                                                   item[ch].split("\\")[-1]))
                     else:
                         features.append(cv2.imread(CORRECTED_PATH +
-                                                   item[0].split("/")[-1]))
-                    measurements.append(angle)
+                                                   item[ch].split("/")[-1]))
+                    if ch = 0: measurements.append(angle)
+                    if ch = 1: measurements.append(angle+0.25)
+                    if ch = 2: measurements.append(angle-0.25)
                 else:
                     # add and augment non-zero
                     # left Image
@@ -243,22 +246,22 @@ def training_model_2(X_train, X_valid):
     model.add(Convolution2D(36, 5, 5, border_mode='valid', subsample=(1, 1)))
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
-    #model.add(Convolution2D(48, 5, 5, border_mode='same', subsample=(1, 1)))
-    #model.add(Activation('relu'))
-    #model.add(MaxPooling2D(pool_size=(2, 2), border_mode='same'))
-    #model.add(Convolution2D(64, 3, 3, border_mode='same', subsample=(1, 1)))
-    #model.add(Activation('relu'))
-    #model.add(MaxPooling2D(pool_size=(2, 2)))
-    #model.add(Convolution2D(64, 3, 3, border_mode='valid', subsample=(1, 1)))
-    #model.add(Activation('relu'))
-    #model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Convolution2D(48, 5, 5, border_mode='same', subsample=(1, 1)))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2), border_mode='same'))
+    model.add(Convolution2D(64, 3, 3, border_mode='same', subsample=(1, 1)))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Convolution2D(64, 3, 3, border_mode='valid', subsample=(1, 1)))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Flatten())
     model.add(Dense(100))
-    model.add(Dropout(0.5))
+    #model.add(Dropout(0.5))
     model.add(Dense(50))
-    model.add(Dropout(0.5))
+    #model.add(Dropout(0.5))
     model.add(Dense(10))
-    model.add(Dropout(0.5))
+    #model.add(Dropout(0.5))
     model.add(Dense(1))
     # plot(model, to_file='examples/model.png')
     model.compile(loss='mse', optimizer='adam')
