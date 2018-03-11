@@ -19,7 +19,7 @@ FILE_DIR = "usdc-t1-p3-data/data/"
 # FILE_DIR = "usdc-t1-p3-data/"
 DATA_FILE = "driving_log.csv"
 CORRECTED_PATH = FILE_DIR + "IMG/"
-MODEL_TO_USE = nvidia_2
+# MODEL_TO_USE = nvidia_2
 
 # to arrive at correct data size after image augmentation
 SAMPLES_FACTOR = 3
